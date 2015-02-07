@@ -48,5 +48,12 @@ RSpec.describe User, type: :model do
         expect(user.valid?).to eq(false)
       end
     end
+
+    it "must be a unique email address" do
+      dup_user = user.dup
+      dup_user.email = user.email.upcase
+      user.save
+      expect(dup_user.valid?).to eq(false)
+    end
   end
 end
