@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { User.new(name: "test", email: 'email@test.com') }
+  let(:user) { User.new(name: "test", email: 'email@test.com',
+                        password: "foobar", password_confirmation: "foobar") }
 
   it 'should be valid' do
     expect(user.valid?).to eq(true)
@@ -54,6 +55,13 @@ RSpec.describe User, type: :model do
       dup_user.email = user.email.upcase
       user.save
       expect(dup_user.valid?).to eq(false)
+    end
+  end
+
+  context 'user.password_digest' do
+    it 'must have a minimum length of 6' do
+      user.password = user.password_confirmation = "a" * 5
+      expect(user.valid?).to eq(false)
     end
   end
 end
