@@ -42,7 +42,7 @@ RSpec.describe User, type: :model do
     end
     it "doesn't accept invalid email addresses" do
       invalid_addresses = %w[user@example,com user_at_foo.org user.name@example.
-                            foo@bar_baz.com foo@bar+baz.com]
+                            foo@bar_baz.com foo@bar+baz.com foo@bar..com]
 
       invalid_addresses.each do |address|
         user.email = address
