@@ -56,6 +56,14 @@ RSpec.describe User, type: :model do
       user.save
       expect(dup_user.valid?).to eq(false)
     end
+
+    it 'downcases the email' do
+      user.email.upcase!
+      upper_case_email = user.email.upcase
+      user.save!
+      expect(user.email).to_not eq(upper_case_email)
+      expect(user.email).to eq(upper_case_email.downcase)
+    end
   end
 
   context 'user.password_digest' do
