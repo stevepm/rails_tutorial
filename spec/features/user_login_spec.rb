@@ -12,4 +12,17 @@ feature 'GET /login' do
     visit root_path
     expect(page).to_not have_content('Invalid email/password')
   end
+
+  scenario 'user logs in with correct information' do
+    user = UsersFixture::create_user
+    visit login_path
+    fill_in 'session[email]', with: user.email
+    fill_in 'session[password]', with: user.password
+    within 'form' do
+      click_on 'Log in'
+    end
+    expect(page).to_not have_link('Log in')
+    expect(page).to have_link('Log out')
+    expect(page).to have_link('Profile')
+  end
 end

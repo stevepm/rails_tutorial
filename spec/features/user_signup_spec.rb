@@ -30,5 +30,8 @@ feature 'GET /signup' do
     expect(after_users).to eq(before_users+1)
     expect(current_path).to eq(user_path(User.last))
     expect(page).to have_content('Welcome to the Sample App!')
+    expect(page).to_not have_link('Log in')
+    expect(page).to have_link('Log out')
+    expect(page).to have_link('Profile')
   end
 end
