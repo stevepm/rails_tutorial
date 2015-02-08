@@ -16,4 +16,17 @@ feature 'GET /signup' do
       expect(page).to have_content "Password is too short (minimum is 6 characters)"
     end
   end
+
+  scenario 'enter correct signup information' do
+    before_users = User.count
+    visit signup_path
+    fill_in 'user[name]', with: 'user'
+    fill_in 'user[email]', with: 'valid@email.com'
+    fill_in 'user[password]', with: 'foobar'
+    fill_in 'user[password_confirmation]', with: 'foobar'
+    click_on 'Create my account'
+
+    after_users = User.count
+    expect(after_users).to eq(before_users+1)
+  end
 end
