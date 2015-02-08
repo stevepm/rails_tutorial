@@ -28,5 +28,6 @@ feature 'GET /signup' do
 
     after_users = User.count
     expect(after_users).to eq(before_users+1)
+    expect(current_path).to eq(user_path(User.last))
   end
 end
