@@ -72,4 +72,10 @@ RSpec.describe User, type: :model do
       expect(user.valid?).to eq(false)
     end
   end
+
+  context 'user.authenticated?' do
+    it 'returns false if no digest is found' do
+      expect(user.authenticated?('')).to eq(false)
+    end
+  end
 end
