@@ -3,17 +3,16 @@ require 'rails_helper'
 feature 'GET /users/:id' do
   let(:user) { UsersFixture::create_user }
 
-  before do
-    visit login_path
-    fill_in 'session[email]', with: user.email
-    fill_in 'session[password]', with: user.password
-    within 'form' do
-      click_on 'Log in'
-    end
-    visit('/users/' + user.id.to_s + '/edit')
-  end
-
   context 'invalid information' do
+    before do
+      visit login_path
+      fill_in 'session[email]', with: user.email
+      fill_in 'session[password]', with: user.password
+      within 'form' do
+        click_on 'Log in'
+      end
+      visit(edit_user_path(user))
+    end
     scenario 'user tries to edit their information with invalid info' do
       fill_in 'user[email]', with: 'invalid_email'
       fill_in 'user[name]', with: '  '
@@ -27,7 +26,15 @@ feature 'GET /users/:id' do
   end
 
   context 'valid information' do
-    scenario 'user tries to edit their information with valid info' do
+    scenario 'user tries to edit their information with valid info with friendly forwarding' do
+      visit(edit_user_path(user))
+      visit login_path
+      fill_in 'session[email]', with: user.email
+      fill_in 'session[password]', with: user.password
+      within 'form' do
+        click_on 'Log in'
+      end
+      expect(current_path).to eq(edit_user_path(user))
       new_email = "valid@valid.com"
       new_name = "valid"
       fill_in 'user[email]', with: new_email
