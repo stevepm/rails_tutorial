@@ -18,8 +18,16 @@ RSpec.describe UsersController, type: :controller do
   end
 
   context 'not logged in' do
+
+    describe "GET #index" do
+      it 'should redirect to login_url' do
+        get :index
+        assert_redirected_to login_url
+      end
+    end
+
     describe "GET #edit" do
-      it 'should redirect to login_url if not logged in' do
+      it 'should redirect to login_url' do
         get :edit, id: @user
         expect(flash.empty?).to eq(false)
         assert_redirected_to login_url
@@ -27,7 +35,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe "PATCH #update" do
-      it 'should redirect to login_url if not logged in' do
+      it 'should redirect to login_url' do
         patch :update, id: @user, user: {name: @user.name, email: @user.email}
         expect(flash.empty?).to eq(false)
         assert_redirected_to login_url
@@ -40,7 +48,7 @@ RSpec.describe UsersController, type: :controller do
       session[:user_id] = @other_user.id
     end
     describe "GET #edit" do
-      it 'should redirect to login_url if not logged in' do
+      it 'should redirect to root_url' do
         get :edit, id: @user
         expect(flash.empty?).to eq(true)
         assert_redirected_to root_url
@@ -48,7 +56,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe "PATCH #update" do
-      it 'should redirect to login_url if not logged in' do
+      it 'should redirect to root_url' do
         patch :update, id: @user, user: {name: @user.name, email: @user.email}
         expect(flash.empty?).to eq(true)
         assert_redirected_to root_url
