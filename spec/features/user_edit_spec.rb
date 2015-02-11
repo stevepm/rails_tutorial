@@ -4,7 +4,13 @@ feature 'GET /users/:id' do
   let(:user) { UsersFixture::create_user }
 
   before do
-    visit ('/users/' + user.id.to_s + '/edit')
+    visit login_path
+    fill_in 'session[email]', with: user.email
+    fill_in 'session[password]', with: user.password
+    within 'form' do
+      click_on 'Log in'
+    end
+    visit('/users/' + user.id.to_s + '/edit')
   end
 
   context 'invalid information' do
