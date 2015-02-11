@@ -5,6 +5,8 @@ RSpec.describe UsersController, type: :controller do
 
   before do
     @user = UsersFixture::create_user
+    @other_user = UsersFixture::create_user(name: 'other_user',
+                                            email: 'other@other.com')
   end
 
   describe "GET #new" do
@@ -29,6 +31,27 @@ RSpec.describe UsersController, type: :controller do
         patch :update, id: @user, user: {name: @user.name, email: @user.email}
         expect(flash.empty?).to eq(false)
         assert_redirected_to login_url
+      end
+    end
+  end
+
+  context 'logged in as wrong user' do
+    before do
+      session[:user_id] = @other_user.id
+    end
+    describe "GET #edit" do
+      it 'should redirect to login_url if not logged in' do
+        get :edit, id: @user
+        expect(flash.empty?).to eq(true)
+        assert_redirected_to root_url
+      end
+    end
+
+    describe "PATCH #update" do
+      it 'should redirect to login_url if not logged in' do
+        patch :update, id: @user, user: {name: @user.name, email: @user.email}
+        expect(flash.empty?).to eq(true)
+        assert_redirected_to root_url
       end
     end
   end
