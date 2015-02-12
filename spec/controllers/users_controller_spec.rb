@@ -4,7 +4,7 @@ RSpec.describe UsersController, type: :controller do
   render_views
 
   before do
-    @user = UsersFixture::create_user
+    @user = UsersFixture::create_user(admin: true)
     @other_user = UsersFixture::create_user(name: 'other_user',
                                             email: 'other@other.com')
   end
@@ -41,9 +41,19 @@ RSpec.describe UsersController, type: :controller do
         assert_redirected_to login_url
       end
     end
+
+    describe "DELETE #destroy" do
+      it 'redirects to login_url' do
+        before_count = User.count
+        delete :destroy, id: @user
+        after_count = User.count
+        expect(after_count).to eq(before_count)
+        assert_redirected_to login_url
+      end
+    end
   end
 
-  context 'logged in as wrong user' do
+  context 'logged in as wrong user/non-admin' do
     before do
       session[:user_id] = @other_user.id
     end
@@ -62,6 +72,35 @@ RSpec.describe UsersController, type: :controller do
         assert_redirected_to root_url
       end
     end
+
+    describe "DELETE #destroy" do
+      it 'redirects to root_url' do
+        before_count = User.count
+        delete :destroy, id: @user
+        after_count = User.count
+        expect(after_count).to eq(before_count)
+        assert_redirected_to root_url
+      end
+    end
+
   end
+
+  context 'admin user' do
+
+    before do
+      session[:user_id] = @user.id
+    end
+
+    describe "DELETE #destroy" do
+      it 'removes a user' do
+        before_count = User.count
+        delete :destroy, id: @other_user
+        after_count = User.count
+        expect(after_count).to eq(before_count - 1)
+        assert_redirected_to users_url
+      end
+    end
+  end
+
 
 end
